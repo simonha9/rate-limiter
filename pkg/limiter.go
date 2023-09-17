@@ -30,5 +30,13 @@ func NewTokenLimiter() TokenLimiter {
 }
 
 func (t TokenLimiter) Run() {
+	while true {
+		// refill at the refill rate, need to use a ticker
 
+		// for each request, check if there are enough tokens
+		// if so, decrement the tokens and return
+		// if not, wait until there are enough tokens (drop the current request)
+		
+
+	}
 }
