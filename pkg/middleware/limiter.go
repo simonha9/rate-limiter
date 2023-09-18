@@ -8,7 +8,7 @@ import (
 )
 
 // need to implement gin handlerfunc interface for it to be a middleware
-func TokenLimiterMiddleware() gin.HandlerFunc {
+func (t TokenLimiter) TokenLimiterMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if (c.Request.URL.Path == "/ping") {
 			// raise a rate limit error
@@ -56,5 +56,8 @@ func (t TokenLimiter) refill() {
 }
 
 func (t TokenLimiter) Run() {
-	fmt.Println("Ticker run")
+	for {
+		t.refill()
+		time.Sleep(t.refillRate * time.Second)
+	}
 }
