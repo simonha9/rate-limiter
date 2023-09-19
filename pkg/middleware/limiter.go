@@ -10,12 +10,19 @@ import (
 func (t TokenLimiter) TokenLimiterMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if (c.Request.URL.Path == "/ping") {
-			// raise a rate limit error
-			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
-				"message": "Rate limit exceeded",
-				"retry-after": "1",
-			})
-			return
+
+			if (t.buckets[0].numTokens > 0) {
+				t.buckets[0].numTokens--
+			} else if (t.buckets[1].numTokens > 0) {
+				t.buckets[1].numTokens--
+			} else {
+				// raise a rate limit error
+				c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{
+					"message": "Rate limit exceeded",
+					"retry-after": "1",
+				})
+				return
+			}
 		}
 		c.Next()
 	}
