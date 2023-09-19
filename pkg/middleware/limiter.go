@@ -2,8 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	_ "time"
-	"fmt"
+	"time"
 	"net/http"
 )
 
@@ -23,7 +22,7 @@ func (t TokenLimiter) TokenLimiterMiddleware() gin.HandlerFunc {
 }
 
 type TokenLimiter struct {
-	refillRate int64
+	refillRate int
 	buckets []Bucket
 	numBuckets int
 }
@@ -35,7 +34,7 @@ type Bucket struct {
 
 func NewTokenLimiter() TokenLimiter {
 	return TokenLimiter{
-		refillRate: 1.0,
+		refillRate: 1,
 		buckets: []Bucket{
 			Bucket{
 				capacity: 10,
@@ -58,6 +57,6 @@ func (t TokenLimiter) refill() {
 func (t TokenLimiter) Run() {
 	for {
 		t.refill()
-		time.Sleep(t.refillRate * time.Second)
+		time.Sleep(time.Duration(t.refillRate) * time.Second)
 	}
 }
